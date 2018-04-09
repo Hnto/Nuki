@@ -1,0 +1,19 @@
+<!doctype html>
+<title>Whooops!!</title>
+<style>
+  body { text-align: center; padding: 150px; background-color: #e0e0e0; }
+  h1 { font-size: 50px; }
+  body { font: 20px Helvetica, sans-serif; color: #333; }
+  article { display: block; text-align: left; width: 650px; margin: 0 auto; }
+</style>
+
+<article>
+  <h1>Whooops!</h1>
+  <h2>Something wrong happened</h2>
+  <div>
+    <p>
+      We're working very hard to fix the problem and get you back
+      to doing what you were doing.
+    </p>
+  </div>
+</article>
