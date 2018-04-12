@@ -51,14 +51,18 @@ class Crypter {
     /**
      * Decrypt data by key
      * 
-     * @param string $data
+     * @param mixed $data
      * @param string $key
      * @return string
      */
-    public function decrypt(string $data, $key) : string {
+    public function decrypt($data, $key) : string {
       $this->validateData($data);
       $this->validateKey($key);
-      
+     
+      if (empty($data)) {
+          return '';
+      }
+ 
       list($encrypted, $iv) = explode(self::ENCRYPTED_IV_SEPERATOR, base64_decode($data), 2);
 
       return openssl_decrypt($encrypted, self::CIPHER_METHOD, $key, 0, $iv);

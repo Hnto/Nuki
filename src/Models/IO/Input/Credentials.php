@@ -56,11 +56,12 @@ final class Credentials {
     $user = isset($creds['user']) ? $creds['user'] : false;
     $pass = isset($creds['password']) ? $creds['password'] : false;
 
-    if ($this->username !== $user && 
-        \Nuki\Handlers\Core\Assist::decrypt($this->password) !== $pass) {
-      return false;
+    $decrypted = Assist::hash(Assist::decrypt($this->password));
+
+    if ($this->username === $user && $decrypted === $pass) {
+      return true;
     }
     
-    return true;
+    return false;
   }
 }

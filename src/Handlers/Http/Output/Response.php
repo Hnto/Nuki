@@ -81,7 +81,7 @@ class Response {
   /**
    * Redirect to another page with additional delay
    * 
-   * @param type $to
+   * @param string $to
    * @param int $delay
    *
    * @return boolean
@@ -102,6 +102,7 @@ class Response {
     }
     
     header('Location: ' . $domain . '/' . $to);
+    exit;
   }
   
   /**
