@@ -29,12 +29,10 @@ class Base implements \Pimple\ServiceProviderInterface {
         'request' => $pimple['request-handler'],
         'ids' => [
           'username' => [
-            'username', 'x-username',
-            'x-id', 'user',
-            'pincode', 'x-user'
+            'username', 'x-username', 'user', 'x-user'
           ],
           'password' => [
-            'secret', 'x-pass', 'x-password'
+            'x-pass', 'x-password', 'password', 'pass'
           ],
         ],
       ];
@@ -57,3 +55,4 @@ class Base implements \Pimple\ServiceProviderInterface {
       ];
     }
 }
+
