@@ -260,6 +260,7 @@ class Application {
                 TerminateApplication::class,
                 [
                     'caller' => Assist::className($this),
+		    'type' => 'framework',
                     'name' => TerminateApplication::class
                 ]
             );

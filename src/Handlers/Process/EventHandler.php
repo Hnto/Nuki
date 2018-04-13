@@ -38,7 +38,9 @@ class EventHandler {
             return false;
         }
 
-        $registeredEvent = new $event($params['caller']);
+	$caller = isset($params['caller']) ? $params['caller'] : '';
+	$type = isset($params['type']) ? $params['type'] : Event::EVENT_TYPE_DEFAULT;
+        $registeredEvent = new $event($caller, $type);
 
         $this->registeredEvents[$params['name']] = $registeredEvent;
         

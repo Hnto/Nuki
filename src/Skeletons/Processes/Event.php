@@ -11,6 +11,9 @@ abstract class Event {
     
     const EVENT_STATUS_FAILED = 'failed';
 
+    const EVENT_TYPE_DEFAULT = 'default';
+    const EVENT_TYPE_FRAMEWORK = 'framework';
+
     private $stopNotify = false;
 
     /**
@@ -40,14 +43,22 @@ abstract class Event {
      * @var string 
      */
     private $status;
-    
+	
+    /**
+     * Contains the type of the event
+     *
+     * @var string
+     */
+    private $type = 'default';
+ 
     /**
      * Set the caller requesting the event
      * 
      * @param string $caller
      */
-    public function __construct(string $caller) {
+    public function __construct(string $caller, string $type = 'default') {
         $this->caller = $caller;
+	$this->type = $type;
     }
 
     /**
@@ -100,10 +111,41 @@ abstract class Event {
 
     /**
      * Stop notifying any more watchers
+     * Not possible for framework events
      */
     public function stopNotifying()
     {
+	if ($this->isFrameworkEvent()) {
+	    return false;
+	}
+
         $this->stopNotify = true;
+    }
+
+    /**
+     * Check whether the event type is framework
+     *
+     * @return bool
+     */
+    public function isFrameworkEvent() : bool {
+        if ($this->type !== self::EVENT_TYPE_FRAMEWORK) {
+	    return false;
+	}
+
+	return true;
+    }
+
+    /**
+     * Check whether the event type is default
+     *
+     * @return bool
+     */
+    public function isDefaultEvent() : bool {
+        if ($this->type !== self::EVENT_TYPE_DEFAULT) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
