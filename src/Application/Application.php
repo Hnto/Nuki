@@ -2,31 +2,26 @@
 namespace Nuki\Application;
 
 use Nuki\Exceptions\Base;
-use Nuki\Handlers\Core\Resolver;
-use Nuki\Handlers\Http\Input\Request;
-use Nuki\Handlers\Http\Output\Response;
+use Nuki\Handlers\Core\{
+    Assist,
+    Resolver
+};
+use Nuki\Handlers\Events\TerminateApplication;
+use Nuki\Handlers\Process\EventHandler;
+use Nuki\Handlers\Http\{
+    Input\Request,
+    Output\Response
+};
+
+use Nuki\Handlers\Watchers\{
+    ExitApplication,
+    LogBeforeTerminate
+};
 use Nuki\Models\IO\Output\Content;
 use Nuki\Skeletons\Providers\Extender;
 use Pimple\Container;
 
 class Application {
-    /**
-     * Define default events location
-     * Becomes: Nuki\Units\UNITNAME\Events\
-     */
-    const EVENTS_DEFAULT_LOCATION = '\\Events\\';
-
-    /**
-     * Define default events location
-     * Becomes: Nuki\Units\UNITNAME\Watchers\
-     */
-    const WATCHERS_DEFAULT_LOCATION = '\\Watchers\\';
-
-    /**
-     * Define application root namespace
-     * Becomes: Nuki\\ 
-     */
-    const APPLICATION_ROOT_NAMESPACE = '';
 
     /**
      * Define application unit namespace
@@ -77,12 +72,6 @@ class Application {
     const SERVICES_INFO_PATH = '/settings/Services/services.json';
 
     /**
-     * Define application properties path
-     * Example: see value
-     */
-    const APPLICATION_PROPS_PATH = '/settings/Application/app.properties';
-
-    /**
     * Contains the container
     * 
     * @var \Pimple\Container
@@ -111,13 +100,40 @@ class Application {
     private $activeProcess;
     
     /**
-     * Set the pimple container
-     * 
-     * @param \Pimple\Container $container
+     * Setup the application
+     *
+     * - Set the storage driver
+     * - Register default service providers
+     * - Set helper parameters
+     * - Register framework events
+     *
      */
-    public function __construct(\Pimple\Container $container) {
+    public function __construct() {
 
-        static::$container = $container;
+        static::$container = new Container();
+
+        /**
+         * Set the storage driver
+         */
+        static::getContainer()->offsetSet('storage-driver', Assist::getAppStorageDriver());
+
+        /**
+         * Register service provider
+         * with default libraries
+         */
+        self::getContainer()->register(new \Nuki\Providers\Core\Storage\Base());
+        self::getContainer()->register(new \Nuki\Providers\Core\Input\Base());
+        self::getContainer()->register(new \Nuki\Providers\Core\Output\Base());
+        self::getContainer()->register(new \Nuki\Providers\Core\Helpers\Base());
+        self::getContainer()->register(new \Nuki\Providers\Core\Framework\Base());
+
+        /**
+         * Set helper parameters
+         */
+        $this->getService('params-handler')->add('app-dir', dirname(getcwd()));
+
+        //Register framework events
+        $this->registerFrameworkEvents();
     }
 
     /**
@@ -234,6 +250,22 @@ class Application {
     }
 
     /**
+     * Registers the framework events
+     */
+    public function registerFrameworkEvents()
+    {
+        //Register terminate application event
+        $this->getService('event-handler')
+            ->registerEvent(
+                TerminateApplication::class,
+                [
+                    'caller' => Assist::className($this),
+                    'name' => TerminateApplication::class
+                ]
+            );
+    }
+
+    /**
      * Run the application
      * - Incoming request will be handled
      * - Registration in the application will be done
@@ -270,15 +302,14 @@ class Application {
         //Start session
         $this->getService('session-handler')->start();
 
-        if ($this->getService('router')->routeIsCallable()) {
-
-            $this->executeCallback();
-
-            return;
-        }
-
         //Execute extenders
         $this->executeUnitExtenders($this->getActiveUnit());
+
+        //Execute callback
+        if ($this->getService('router')->routeIsCallable()) {
+            $this->executeCallback();
+            return;
+        }
 
         $this->executeService();
     }
@@ -360,4 +391,21 @@ class Application {
                 ->get('params')
         );
     }
+
+    /**
+     * Fire TerminateApplication event
+     * with two framework watchers.
+     * One to log and one to actually exit.
+     */
+    public function terminate()
+    {
+        /** @var EventHandler $eventHandler */
+        $eventHandler = $this->getService('event-handler');
+
+        $eventHandler->getEvent(TerminateApplication::class)->attach(new LogBeforeTerminate());
+        $eventHandler->getEvent(TerminateApplication::class)->attach(new ExitApplication());
+
+        $eventHandler->fire(TerminateApplication::class, ['app' => $this]);
+    }
 }
+
