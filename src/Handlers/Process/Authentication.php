@@ -37,6 +37,7 @@ class Authentication implements \Nuki\Skeletons\Handlers\Helper {
         $request->headers()->get()
       )
     );
+
     $username = $this->searchValue($options['ids']['username'], $requestInputs);
     $password = $this->searchValue($options['ids']['password'], $requestInputs);
 
@@ -69,7 +70,9 @@ class Authentication implements \Nuki\Skeletons\Handlers\Helper {
 
   /**
    * Set input data
-   * 
+   * username using one the keys: user,username,x-user,x-username
+   * password using one the keys: pass, password, x-pass, x-password
+   *
    * @param array $input
    */
   public function setInput(array $input = []) {
@@ -108,3 +111,4 @@ class Authentication implements \Nuki\Skeletons\Handlers\Helper {
     return null;
   }  
 }
+

@@ -1,8 +1,19 @@
 <?php
+
 namespace Nuki\Models\IO\Input;
 
+use Nuki\Handlers\Core\Assist;
+
 final class Credentials {
-  
+
+    const USER_KEYS = [
+        'user', 'username', 'x-username', 'x-user'
+    ];
+
+    const PASSWORD_KEYS = [
+        'pass', 'password', 'x-password', 'x-pass'
+    ];
+
   /**
    * Contains the username
    *
@@ -49,19 +60,35 @@ final class Credentials {
   /**
    * Validate credentials
    * 
-   * @param array $creds
+   * @param array $creds [user,username,x-user,x-username] [pass, password, x-pass, x-password]
+   *
    * @return bool
    */
   public function validate(array $creds = []) : bool {
-    $user = isset($creds['user']) ? $creds['user'] : false;
-    $pass = isset($creds['password']) ? $creds['password'] : false;
+      $user = '';
+      $pass = '';
 
-    $decrypted = Assist::hash(Assist::decrypt($this->password));
+      //Check for user keys
+      foreach (self::USER_KEYS as $key) {
+          if (isset($creds[$key])) {
+              $user = $creds[$key];
+          }
+      }
 
-    if ($this->username === $user && $decrypted === $pass) {
-      return true;
-    }
-    
-    return false;
+      //Check for password keys
+      foreach (self::PASSWORD_KEYS as $key) {
+          if (isset($creds[$key])) {
+              $pass = $creds[$key];
+          }
+      }
+
+      $decrypted = Assist::hash(Assist::decrypt($this->password));
+
+      if ($this->username === $user && $decrypted === $pass) {
+          return true;
+      }
+
+      return false;
   }
 }
+
