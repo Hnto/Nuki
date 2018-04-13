@@ -74,14 +74,14 @@ class FoilRenderer implements \Nuki\Skeletons\Handlers\Renderer {
   public function engine() : \Foil\Engine {
     return $this->engine;
   }
-  
-  /**
-   * Set params
-   * @param array $params
-   */
-  public function setParams(array $params = []) {
-    $this->params = $params;
-  }
+
+    /**
+     * Add params
+     * @param array $params
+     */
+    public function addParams(array $params = []) {
+      $this->params = array_merge($this->params, $params);
+    }
 
   /**
    * Get params
@@ -113,3 +113,4 @@ class FoilRenderer implements \Nuki\Skeletons\Handlers\Renderer {
     $this->content = $content;
   }
 }
+
