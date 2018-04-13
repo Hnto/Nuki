@@ -302,14 +302,14 @@ class Application {
         //Start session
         $this->getService('session-handler')->start();
 
-        //Execute extenders
-        $this->executeUnitExtenders($this->getActiveUnit());
-
         //Execute callback
         if ($this->getService('router')->routeIsCallable()) {
             $this->executeCallback();
             return;
         }
+
+        //Execute extenders
+        $this->executeUnitExtenders($this->getActiveUnit());
 
         $this->executeService();
     }
