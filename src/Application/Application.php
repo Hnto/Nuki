@@ -154,7 +154,7 @@ class Application {
      */
     public function registerService($service, $name = '') {
         if (empty($name)) {
-            $name = \Nuki\Handlers\Core\Assist::classNameShort($service);
+            $name = Assist::classNameShort($service);
         }
 
         static::$container->offsetSet(strtolower($name), $service);
@@ -408,4 +408,5 @@ class Application {
         $eventHandler->fire(TerminateApplication::class, ['app' => $this]);
     }
 }
+
 

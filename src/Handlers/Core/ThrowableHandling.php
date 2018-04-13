@@ -21,12 +21,9 @@ class ThrowableHandling {
      */
     public function handler(\Throwable $t) {
         //Write to log
-        $this->toLog($t, []);
+        $this->toLog($t);
 
-        if ($t instanceof \Error &&
-            $t instanceof \Exception &&
-            Assist::getAppEnv() !== 'DEVELOPMENT'
-        ) {
+        if (!in_array(strtolower(Assist::getAppEnv()), ['dev', 'development', 'local'])) {
           //Write to log
           $this->toLog($t);
 
@@ -60,10 +57,9 @@ class ThrowableHandling {
 
     $response->httpStatusCode(\Nuki\Models\IO\Output\Http::HTTP_EXPECTATION_FAILED);
 
-    var_dump($t->getMessage());
-    exit;
-
     $response->send();
+
+    return;
   }
 
   /**
@@ -81,10 +77,18 @@ class ThrowableHandling {
     $response->httpStatusCode(\Nuki\Models\IO\Output\Http::HTTP_EXPECTATION_FAILED);
 
     $response->send();
+
+    return;
   }
 
+    /**
+     * @param \Throwable $t
+     *
+     * @return mixed
+     */
   private function toLog(\Throwable $t)
   {
-
+    return;
   }
 }
+
