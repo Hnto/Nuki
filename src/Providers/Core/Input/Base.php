@@ -27,6 +27,7 @@ class Base implements \Pimple\ServiceProviderInterface {
         //Create config handler
         $appDir = dirname(getcwd());
         $dir = new \DirectoryIterator($appDir . '/settings/Config');
+        $configVars = [];
         foreach ($dir as $fileinfo) {
             if (!$fileinfo->isFile()) {
                 continue;
@@ -34,7 +35,7 @@ class Base implements \Pimple\ServiceProviderInterface {
 
             $configVars[] = include $fileinfo->getPathname();
         }
-        $pimple['config-handler'] = function() {
+        $pimple['config-handler'] = function() use ($configVars) {
             return new \Adbar\Dot($configVars);
         };
     }
