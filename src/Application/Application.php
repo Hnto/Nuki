@@ -281,17 +281,7 @@ class Application {
         $request = $this->getService('request-handler');
 
         //Process incoming request
-        try {
-            $request->incoming($this);
-        } catch (Base $exception) {
-            /** @var Response $response */
-            $this->getService('response-handler')
-                ->setContent(
-                    new Content($exception->getMessage())
-                )->send();
-
-            return;
-        }
+        $request->incoming($this);
 
         //Register helper services
         $helpers = static::$container['helpers'];
