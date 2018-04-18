@@ -33,7 +33,7 @@ class Base implements \Pimple\ServiceProviderInterface {
                 continue;
             }
 
-            $configVars[] = include $fileinfo->getPathname();
+            $configVars[strstr($fileinfo->getFilename(), '.', true)] = include $fileinfo->getPathname();
         }
         $pimple['config-handler'] = function() use ($configVars) {
             return new \Adbar\Dot($configVars);
