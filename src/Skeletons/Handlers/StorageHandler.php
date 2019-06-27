@@ -10,4 +10,11 @@ interface StorageHandler {
      * @param StorageConnector $connector
      */
     public function __construct(StorageConnector $connector);
+
+    /**
+     * Must return the current connector
+     *
+     * @return StorageConnector
+     */
+    public function getConnector(): StorageConnector;
 }

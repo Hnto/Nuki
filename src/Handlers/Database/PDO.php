@@ -10,9 +10,9 @@ class PDO implements StorageHandler {
     /**
      * Contains the current connector
      * 
-     * @var object 
+     * @var StorageConnector
      */
-    private $conn;
+    private $connector;
     
     /**
      * Set the connection
@@ -21,15 +21,23 @@ class PDO implements StorageHandler {
      * @throws Base
      */
     public function __construct(StorageConnector $connector) {
-        $connection = $connector->getConnection();
-        
-        if (empty($connection)) {
+        if (empty($connector->getConnection())) {
             throw new Base('no connection is available');
         }
         
-        $this->conn = $connection;
+        $this->connector = $connector;
     }
-    
+
+    /**
+     * Must return the current connector
+     *
+     * @return StorageConnector
+     */
+    public function getConnector(): StorageConnector
+    {
+        return $this->connector;
+    }
+
     /**
      * Insert a record in the storage
      * 
@@ -38,9 +46,15 @@ class PDO implements StorageHandler {
      * @return string the last inserted id
      */
     public function insert($query, array $data){        
-        $this->conn->prepare($query)->execute($data);
-        
-        return $this->conn->lastInsertId();
+        $this->connector
+            ->getConnection()
+            ->prepare($query)->execute($data)
+        ;
+
+        return $this->connector
+            ->getConnection()
+            ->lastInsertId()
+        ;
     }
 
     /**
@@ -103,7 +117,11 @@ class PDO implements StorageHandler {
      * @return object statement object
      */
     private function executeQuery($query, $data = null) {
-        $stmt = $this->conn->prepare($query);
+        $stmt = $this->connector
+            ->getConnection()
+            ->prepare($query)
+        ;
+
         $stmt->execute($data);
         
         return $stmt;

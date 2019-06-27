@@ -92,15 +92,18 @@ class Base implements \Pimple\ServiceProviderInterface {
           $renderer = new JsonRenderer();
           $renderInfo = [];
           break;
-        
+
         case "foil":
         default:
+          $folders = array_map(function ($folder) {
+              return dirname(getcwd()) . '/' . $folder;
+          }, $renderingInfo['engines']['foil']['folders']);
+
           $renderer = new FoilRenderer();
           $renderInfo['options'] = $renderingInfo['engines']['foil']['options'];
-          $renderInfo['folders'] = $renderingInfo['engines']['foil']['folders'];
+          $renderInfo['folders'] = $folders;
           break;
       }
-
       //Setup renderer
       $renderer->setup($renderInfo);
       
