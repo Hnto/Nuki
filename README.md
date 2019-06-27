@@ -1,6 +1,6 @@
 # Nuki v1.0
 
-**Please be aware that the Nuki framework is still in BETA and NOT production ready. 
+**Please be aware that the Nuki framework is in BETA and NOT production ready. 
 Documentation for usage is also a minimum at this time**
 
 ### Initial build package setup
@@ -17,8 +17,8 @@ When using the build tool you are given a list of usefull commands to setup your
     - when executing "init" the build tool will install the required packages, setup the files, folders etc.
 
 ### Run framework
-The Nuki framework works with a 'modules type of way', called **Units**. 
-These Units contain the necessary folders, classes and such to run your application.
+The Nuki framework works with **Units**, which are small applications running separate from each other.  
+These Units contain the necessary folders, classes and such to run your Unit.
 A service is required for a unit to be executed. 
 In the service you can process user input, do templating, registering events, watchers (listeners) and firing them accordingly.
 

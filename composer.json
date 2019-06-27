@@ -22,7 +22,9 @@
     "pimple/pimple": "3.0.2",
     "foil/foil": "0.6.6",
     "vlucas/phpdotenv": "^2.4",
-    "adbario/php-dot-notation": "^2.0"
+    "adbario/php-dot-notation": "^2.0",
+    "ext-json": "*",
+    "ext-pdo": "*"
   },
   "autoload": {
     "psr-4": {

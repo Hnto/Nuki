@@ -297,11 +297,20 @@ class Request {
      * @param string $destination
      */
     public function moveUploadedFiles($destination) {
-      $files = $this->getUploadedFiles();
-      
-      foreach($files as $file) {
-        
-      }
+        $files = $this->getUploadedFiles();
+
+        foreach($files as $key => $file) {
+            if (isset($file[0])) {
+                $uploaded = $file[0];
+            } else {
+                $uploaded = $file;
+            }
+
+            move_uploaded_file(
+                $uploaded['tmp_name'],
+                $destination . '/' . $uploaded['name']
+            );
+        }
     }
 
     /**

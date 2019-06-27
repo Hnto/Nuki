@@ -268,12 +268,11 @@ class Application {
 
     /**
      * Run the application
+     *
      * - Incoming request will be handled
      * - Registration in the application will be done
      * - Session will be started
      * - Service will be executed
-     *
-     * @return mixed
      */
     public function run()
     {
